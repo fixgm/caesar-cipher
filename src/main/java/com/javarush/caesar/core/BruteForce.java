@@ -12,22 +12,20 @@ public class BruteForce {
             "до", "из", "ни", "мы", "вы", "ты", "он", "она", "они"
     );
 
-    public String decryptByBruteForce(String encryptedText, char[] alphabet) throws CipherException {
+    public String decryptByBruteForce(String encryptedText, char[] alphabet) {
 
         int bestScore = Integer.MIN_VALUE;
-        int bestKey = -1;
         String bestText = null;
 
         Cipher bruteCipher = new Cipher(alphabet);
 
-        for (int i = 0; i < alphabet.length; i++) {
+        for (int i = 1; i < alphabet.length; i++) {
             try {
                 String text = bruteCipher.decrypt(encryptedText, i);
                 int score = score(text);
 
                 if(score > bestScore) {
                     bestScore = score;
-                    bestKey = i;
                     bestText = text;
                 }
 
@@ -36,7 +34,7 @@ public class BruteForce {
             }
         }
 
-        return bruteCipher.decrypt(bestText, bestKey);
+        return bestText;
 
     }
 
