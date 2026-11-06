@@ -2,10 +2,12 @@ package com.javarush.caesar;
 
 import com.javarush.caesar.core.BruteForce;
 import com.javarush.caesar.core.Cipher;
+import com.javarush.caesar.core.StatisticalAnalyzer;
 import com.javarush.caesar.exception.CipherException;
 import com.javarush.caesar.service.FileManager;
 import com.javarush.caesar.service.Validator;
 
+import java.util.Locale;
 import java.util.Scanner;
 
 public class MainApp {
@@ -21,6 +23,7 @@ public class MainApp {
     private final Validator validator = new Validator();
     private final Cipher cipher = new Cipher(ALPHABET);
     private final BruteForce bruteForce = new BruteForce();
+    private final StatisticalAnalyzer statisticalAnalyzer = new StatisticalAnalyzer();
 
     public static void main(String[] args) {
         new MainApp().run();
@@ -42,6 +45,9 @@ public class MainApp {
                     case "3":
                         bruteForceFile();
                         break;
+                    case "4":
+                        analyzerFile();
+                        break;
                     case "0":
                     case "exit":
                         System.out.println("До свидания!");
@@ -60,29 +66,113 @@ public class MainApp {
         System.out.println("1. Зашифровать файл");
         System.out.println("2. Расшифровать файл с ключом");
         System.out.println("3. Взломать перебором ключей");
+        System.out.println("4. Взломать статический анализ");
         System.out.println("0. Выход (или exit)");
     }
 
     private void encryptFile() throws CipherException {
-        // TODO спросить исходный файл, файл для результата и ключ
-        //  проверить их через validator, прочитать текст через fileManager,
-        //  зашифровать через cipher и записать результат
-        System.out.println("Режим пока не реализован");
+
+        String in = ask("Исходный файл: ");
+        String out = ask("Файл с результатом: ");
+        String key = ask("Ключ: ");
+
+        if (!key.matches("\\d+")) {
+            throw new CipherException("В качестве ключа, может использоваться только целое число");
+        }
+
+        if (!validator.isFileExists(in)) {
+            throw new CipherException("Исходный файл: '" + in + "' невалиден или такого файла не существует");
+        }
+        if (!validator.isFileExists(out)) {
+            throw new CipherException("Файл с результатом: '" + out + "' невалиден или такого файла не существует");
+        }
+
+        if (!validator.isValidKey(Integer.parseInt(key), ALPHABET)) {
+            throw new CipherException("Ключ имеет недопустимую длину. Допустимые значения: 0 - " + (ALPHABET.length - 1));
+        }
+
+        String content = fileManager.readFile(in);
+
+        content = cipher.encrypt(content.toLowerCase(Locale.ROOT), Integer.parseInt(key));
+
+        fileManager.writeFile(content, out);
+
+        System.out.println("Файл зашифрован: '" + out + "'");
     }
 
     private void decryptFile() throws CipherException {
-        // TODO то же, что в encryptFile, только расшифровка
-        System.out.println("Режим пока не реализован");
+
+        String in = ask("Исходный файл: ");
+        String out = ask("Файл с результатом: ");
+        String key = ask("Ключ: ");
+
+        if (!key.matches("\\d+")) {
+            throw new CipherException("В качестве ключа, может использоваться только целое число");
+        }
+
+        if (!validator.isFileExists(in)) {
+            throw new CipherException("Исходный файл: '" + in + "' невалиден или такого файла не существует");
+        }
+        if (!validator.isFileExists(out)) {
+            throw new CipherException("Файл с результатом: '" + out + "' невалиден или такого файла не существует");
+        }
+
+        if (!validator.isValidKey(Integer.parseInt(key), ALPHABET)) {
+            throw new CipherException("Ключ имеет недопустимую длину. Допустимые значения: 0 - " + (ALPHABET.length - 1));
+        }
+
+        String content = fileManager.readFile(in);
+
+        content = cipher.decrypt(content.toLowerCase(Locale.ROOT), Integer.parseInt(key));
+
+        fileManager.writeFile(content, out);
+
+        System.out.println("Файл расшифрован: '" + out + "'");
     }
 
     private void bruteForceFile() throws CipherException {
-        // TODO спросить зашифрованный файл и файл для результата,
-        //  подобрать ключ через bruteForce и записать расшифрованный текст
-        System.out.println("Режим пока не реализован");
+        String in = ask("Исходный файл: ");
+        String out = ask("Файл с результатом: ");
+
+        if (!validator.isFileExists(in)) {
+            throw new CipherException("Исходный файл: '" + in + "' невалиден или такого файла не существует");
+        }
+        if (!validator.isFileExists(out)) {
+            throw new CipherException("Файл с результатом: '" + out + "' невалиден или такого файла не существует");
+        }
+
+        String content = fileManager.readFile(in);
+        content = bruteForce.decryptByBruteForce(content, ALPHABET);
+
+        fileManager.writeFile(content, out);
+
+        System.out.println("Файл взломан: '" + out + "'");
+
+    }
+
+    private void analyzerFile() throws CipherException {
+        String in = ask("Исходный файл: ");
+        String out = ask("Файл с результатом: ");
+
+        if (!validator.isFileExists(in)) {
+            throw new CipherException("Исходный файл: '" + in + "' невалиден или такого файла не существует");
+        }
+        if (!validator.isFileExists(out)) {
+            throw new CipherException("Файл с результатом: '" + out + "' невалиден или такого файла не существует");
+        }
+
+        String content = fileManager.readFile(in);
+        content = statisticalAnalyzer.decryptByAnalyze(content, ALPHABET);
+
+        fileManager.writeFile(content, out);
+
+        System.out.println("Файл взломан: '" + out + "'");
+
     }
 
     private String ask(String prompt) {
         System.out.print(prompt);
         return scanner.nextLine().trim();
     }
+
 }
