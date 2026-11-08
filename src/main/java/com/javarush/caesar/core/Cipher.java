@@ -22,23 +22,19 @@ public class Cipher {
             throw new CipherException("Файл пуст, обрабатывать нечего");
         }
 
-        StringBuilder rezult = new StringBuilder();
+        StringBuilder result = new StringBuilder();
 
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
             Integer pos = indexChar.get(c);
 
             if (pos == null) {
-                rezult.append(c);
+                result.append(c);
             } else {
-                if ((pos + shift) > alphabet.length) {
-                    rezult.append(alphabet[pos + shift - alphabet.length]);
-                } else {
-                    rezult.append(alphabet[pos + shift]);
-                }
+                result.append(alphabet[(pos + shift) % alphabet.length]);
             }
         }
-        return rezult.toString();
+        return result.toString();
     }
 
     public String decrypt(String encryptedText, int shift) throws CipherException {
@@ -46,23 +42,19 @@ public class Cipher {
             throw new CipherException("Файл пуст, обрабатывать нечего");
         }
 
-        StringBuilder rezult = new StringBuilder();
+        StringBuilder result = new StringBuilder();
 
         for (int i = 0; i < encryptedText.length(); i++) {
             char c = encryptedText.charAt(i);
             Integer pos = indexChar.get(c);
 
             if (pos == null) {
-                throw new CipherException("Символа '" + c + "' нет а алфавите");
+                result.append(c);
             } else {
-                if ((pos - shift) < 0) {
-                    rezult.append(alphabet[pos - shift + alphabet.length]);
-                } else {
-                    rezult.append(alphabet[pos - shift]);
-                }
+                result.append(alphabet[(pos - shift + alphabet.length) % alphabet.length]);
             }
         }
-        return rezult.toString();
+        return result.toString();
 
     }
 }
