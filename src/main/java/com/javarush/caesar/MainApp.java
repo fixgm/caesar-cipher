@@ -68,7 +68,7 @@ public class MainApp {
         System.out.println("1. Зашифровать файл");
         System.out.println("2. Расшифровать файл с ключом");
         System.out.println("3. Взломать перебором ключей");
-        System.out.println("4. Взломать статический анализ");
+        System.out.println("4. Взломать статистический анализ");
         System.out.println("0. Выход (или exit)");
     }
 
