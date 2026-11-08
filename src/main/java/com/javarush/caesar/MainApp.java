@@ -143,6 +143,9 @@ public class MainApp {
 
         String content = fileManager.readFile(in);
         content = bruteForce.decryptByBruteForce(content, ALPHABET);
+        if (content == null) {
+            throw new CipherException("Не удалось подобрать ключ");
+        }
 
         fileManager.writeFile(content, out);
 
@@ -163,6 +166,10 @@ public class MainApp {
 
         String content = fileManager.readFile(in);
         content = statisticalAnalyzer.decryptByAnalyze(content, ALPHABET);
+
+        if (content == null) {
+            throw new CipherException("Не удалось подобрать ключ");
+        }
 
         fileManager.writeFile(content, out);
 
