@@ -13,7 +13,7 @@ public class FileManager {
         try {
             return Files.readString(Path.of(filePath), StandardCharsets.UTF_8);
         } catch (IOException e) {
-            throw new CipherException("Не удалось прочитать файл, ошибка: ", e);
+            throw new CipherException("Не удалось прочитать файл " + filePath + ": " + e.getMessage());
         }
     }
 
@@ -21,7 +21,7 @@ public class FileManager {
         try {
             Files.writeString(Path.of(filePath), content, StandardCharsets.UTF_8);
         } catch (IOException e) {
-            throw new CipherException("Не удалось записать файл, ошибка: ", e);
+            throw new CipherException("Не удалось записать файл " + filePath + ": " + e.getMessage());
         }
     }
 }
