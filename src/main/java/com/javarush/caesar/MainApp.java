@@ -166,7 +166,15 @@ public class MainApp {
                 throw new CipherException("В качестве ключа, может использоваться только целое число");
             }
 
-            if (!validator.isValidKey(Integer.parseInt(params.get("key")), ALPHABET)) {
+            int key;
+
+            try {
+                key = Integer.parseInt(params.get("key"));
+            } catch (NumberFormatException e) {
+                throw new CipherException("Ошибка: ключ должен быть целым числом в диапазоне 0.." + (ALPHABET.length - 1));
+            }
+
+            if (!validator.isValidKey(key, ALPHABET)) {
                 throw new CipherException("Ключ имеет недопустимую длину. Допустимые значения: 0 - " + (ALPHABET.length - 1));
             }
 
