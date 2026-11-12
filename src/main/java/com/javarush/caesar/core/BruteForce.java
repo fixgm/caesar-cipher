@@ -19,7 +19,7 @@ public class BruteForce {
 
         Cipher bruteCipher = new Cipher(alphabet);
 
-        for (int i = 1; i < alphabet.length; i++) {
+        for (int i = 0; i < alphabet.length; i++) {
             try {
                 String text = bruteCipher.decrypt(encryptedText, i);
                 int score = score(text);
